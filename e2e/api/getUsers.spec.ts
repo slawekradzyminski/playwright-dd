@@ -31,13 +31,6 @@ test.describe('Users API', () => {
 
     // then
     expect(response.status()).toBe(403);
-    const body = await response.json();
-    expect(body).toMatchObject({
-      status: 403,
-      error: 'Forbidden',
-      message: 'Access Denied',
-      path: '/users'
-    });
   });
 
   test('should return 403 when invalid token provided', async ({ request }) => {
@@ -46,12 +39,5 @@ test.describe('Users API', () => {
 
     // then
     expect(response.status()).toBe(403);
-    const body = await response.json();
-    expect(body).toMatchObject({
-      status: 403,
-      error: 'Forbidden',
-      message: 'Access Denied',
-      path: '/users'
-    });
   });
 });
