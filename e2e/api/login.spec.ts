@@ -1,11 +1,10 @@
 import { test, expect } from '@playwright/test';
+import { ISO_TIMESTAMP_PATTERN } from '../../utils/validation';
 
 test.describe('Login API', () => {
-  const API_URL = 'http://localhost:4001';
-
   test('should return 422 for invalid credentials', async ({ request }) => {
     // when
-    const response = await request.post(`${API_URL}/users/signin`, {
+    const response = await request.post('/users/signin', {
       data: {
         username: 'invaliduser',
         password: 'wrongpassword'
@@ -14,7 +13,6 @@ test.describe('Login API', () => {
 
     // then
     expect(response.status()).toBe(422);
-
     const body = await response.json();
     expect(body).toMatchObject({
       status: 422,
@@ -22,12 +20,12 @@ test.describe('Login API', () => {
       message: 'Invalid username/password supplied',
       path: '/users/signin'
     });
-    expect(body.timestamp).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}\+\d{2}:\d{2}$/);
+    expect(body.timestamp).toMatch(ISO_TIMESTAMP_PATTERN);
   });
 
   test('should handle empty credentials', async ({ request }) => {
     // when
-    const response = await request.post(`${API_URL}/users/signin`, {
+    const response = await request.post('/users/signin', {
       data: {
         username: '',
         password: ''
@@ -45,7 +43,7 @@ test.describe('Login API', () => {
 
   test('should successfully login with valid admin credentials', async ({ request }) => {
     // when
-    const response = await request.post(`${API_URL}/users/signin`, {
+    const response = await request.post('/users/signin', {
       data: {
         username: 'admin',
         password: 'admin'
