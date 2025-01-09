@@ -1,20 +1,20 @@
 import { test, expect } from '../fixtures/authenticated.fixture';
+import { getUsers } from '../../apimethods/getUsers';
+import { User } from '../../types/User';
 
 test.describe('Users API', () => {
   
   test('should return users list when authenticated', async ({ request, authenticatedUser }) => {
     // when
-    const response = await request.get('/users', {
-      headers: {
-        'Authorization': `Bearer ${authenticatedUser.token}`
-      }
-    });
+    const response = await getUsers(request, authenticatedUser.token);
 
     // then
     expect(response.status()).toBe(200);
     const body = await response.json();
+    expect(Array.isArray(body)).toBe(true);
     expect(body.length).toBeGreaterThan(0);
-    const foundUser = body.find(user => user.username === authenticatedUser.userData.username);
+    
+    const foundUser = body.find((user: User) => user.username === authenticatedUser.userData.username);
     expect(foundUser).toBeDefined();
     expect(foundUser).toMatchObject({
       username: authenticatedUser.userData.username,
@@ -27,7 +27,7 @@ test.describe('Users API', () => {
 
   test('should return 403 when no authorization header', async ({ request }) => {
     // when
-    const response = await request.get('/users');
+    const response = await getUsers(request);
 
     // then
     expect(response.status()).toBe(403);
@@ -40,14 +40,9 @@ test.describe('Users API', () => {
     });
   });
 
-  // ToDo: unskip after fixing the bug DD-1678
-  test.skip('should return 403 when invalid token provided', async ({ request }) => {
+  test('should return 403 when invalid token provided', async ({ request }) => {
     // when
-    const response = await request.get('/users', {
-      headers: {
-        'Authorization': 'Bearer invalid-token'
-      }
-    });
+    const response = await getUsers(request, 'invalid-token');
 
     // then
     expect(response.status()).toBe(403);
