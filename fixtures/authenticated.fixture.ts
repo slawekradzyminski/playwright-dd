@@ -2,6 +2,7 @@ import { test as base, expect } from '@playwright/test';
 import { generateUser } from '../generators/userGenerator';
 import { postSignUp } from '../apimethods/postSignUp';
 import { postSignIn } from '../apimethods/postSignIn';
+import { deleteUser } from '../apimethods/deleteUser';
 import { User } from '../types/User';
 
 type AuthenticatedFixtures = {
@@ -12,6 +13,7 @@ type AuthenticatedFixtures = {
 };
 
 export const test = base.extend<AuthenticatedFixtures>({
+  // to co jest przed await use jest wykonywane przed testem (setup)
   authenticatedUser: async ({ request }, use) => {
     const userData = generateUser();
     const registerResponse = await postSignUp(request, userData);
@@ -25,10 +27,15 @@ export const test = base.extend<AuthenticatedFixtures>({
     
     const { token } = await loginResponse.json();
     
+    // to co zwracamy do testu
     await use({
       userData,
       token
     });
+
+    // to co jest po await use jest wykonywane po tescie (cleanup)
+    const deleteResponse = await deleteUser(request, userData.username, token);
+    expect(deleteResponse.status()).toBe(204);
   }
 });
 
