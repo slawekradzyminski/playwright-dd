@@ -1,50 +1,47 @@
 import { test as baseTest, expect } from '@playwright/test';
 import { test as userTest } from '../../fixtures/user.fixture';
 import { test as registeredTest } from '../../fixtures/registered.user.fixture';
-import { FRONTEND_URL } from '../../utils/constants';
+import { RegisterPage } from '../../pages/register.page';
+import { LoginPage } from '../../pages/login.page';
 
 userTest('should successfully register a new user', async ({ page, userData }) => {
     // given
-    await page.goto(`${FRONTEND_URL}/register`);
+    const registerPage = new RegisterPage(page);
+    await registerPage.goto();
 
     // when
-    await page.locator('input[name="firstName"]').fill(userData.firstName);
-    await page.locator('input[name="lastName"]').fill(userData.lastName);
-    await page.locator('input[name="username"]').fill(userData.username);
-    await page.locator('input[name="password"]').fill(userData.password);
-    await page.locator('input[name="email"]').fill(userData.email);
-    await page.getByRole('button', { name: 'Register' }).click();
+    await registerPage.fillRegistrationForm(userData);
+    await registerPage.submitRegistration();
 
     // then
-    await expect(page).toHaveURL(`${FRONTEND_URL}/login`);
-    await expect(page.getByText('Registration successful')).toBeVisible();
+    await expect(page).toHaveURL(new LoginPage(page).page.url());
+    await expect(registerPage.successMessage).toBeVisible();
 });
 
 registeredTest('should show error when registering with existing username', async ({ page, registeredUser }) => {
     // given
-    await page.goto(`${FRONTEND_URL}/register`);
+    const registerPage = new RegisterPage(page);
+    await registerPage.goto();
 
     // when
-    await page.locator('input[name="firstName"]').fill(registeredUser.firstName);
-    await page.locator('input[name="lastName"]').fill(registeredUser.lastName);
-    await page.locator('input[name="username"]').fill(registeredUser.username);
-    await page.locator('input[name="password"]').fill(registeredUser.password);
-    await page.locator('input[name="email"]').fill(registeredUser.email);
-    await page.getByRole('button', { name: 'Register' }).click();
+    await registerPage.fillRegistrationForm(registeredUser);
+    await registerPage.submitRegistration();
 
     // then
-    await expect(page.getByText('Username is already in use')).toBeVisible();
+    await expect(registerPage.errorMessage).toBeVisible();
 });
 
 baseTest('should navigate to login page when clicking cancel button', async ({ page }) => {
     // given
-    await page.goto(`${FRONTEND_URL}/register`);
-    const cancelLink = page.getByRole('link', { name: 'Cancel' });
+    const registerPage = new RegisterPage(page);
+    await registerPage.goto();
 
     // when
-    await cancelLink.click();
+    await registerPage.clickCancel();
 
     // then
-    await expect(page).toHaveURL(`${FRONTEND_URL}/login`);
-    await expect(page.getByRole('heading', { name: 'Login' })).toBeVisible();
+    const loginPage = new LoginPage(page);
+    await expect(page).toHaveURL(loginPage.page.url());
+    const heading = await loginPage.getHeading('Login');
+    await expect(heading).toBeVisible();
 }); 

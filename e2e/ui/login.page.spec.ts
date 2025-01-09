@@ -1,42 +1,43 @@
 import { test, expect } from '../../fixtures/registered.user.fixture';
-import { FRONTEND_URL } from '../../utils/constants';
+import { LoginPage } from '../../pages/login.page';
+import { RegisterPage } from '../../pages/register.page';
 
 test('should successfully login with registered user', async ({ page, registeredUser }) => {
     // given
-    await page.goto(`${FRONTEND_URL}/login`);
+    const loginPage = new LoginPage(page);
+    await loginPage.goto();
 
     // when
-    await page.locator('input[name="username"]').fill(registeredUser.username);
-    await page.locator('input[name="password"]').fill(registeredUser.password);
-    await page.getByRole('button', { name: 'Login' }).click();
+    await loginPage.loginWithUser(registeredUser);
 
     // then
-    await expect(page.getByRole('heading', { name: `Hi ${registeredUser.firstName}!` })).toBeVisible();
-    await expect(page.getByText("You're logged in! Congratulations :)")).toBeVisible();
+    await expect(loginPage.welcomeMessage(registeredUser.firstName)).toBeVisible();
+    await expect(loginPage.successMessage).toBeVisible();
 });
 
 test('should display error message for invalid credentials', async ({ page }) => {
     // given
-    await page.goto(`${FRONTEND_URL}/login`);
+    const loginPage = new LoginPage(page);
+    await loginPage.goto();
 
     // when
-    await page.locator('input[name="username"]').fill('invaliduser');
-    await page.locator('input[name="password"]').fill('wrongpassword');
-    await page.getByRole('button', { name: 'Login' }).click();
+    await loginPage.login('invaliduser', 'wrongpassword');
 
     // then
-    await expect(page.getByText('Invalid username/password supplied')).toBeVisible();
+    await expect(loginPage.errorMessage).toBeVisible();
 });
 
 test('should navigate to register page when clicking register button', async ({ page }) => {
     // given
-    await page.goto(`${FRONTEND_URL}/login`);
-    const registerLink = page.getByRole('link', { name: 'Register' });
+    const loginPage = new LoginPage(page);
+    await loginPage.goto();
 
     // when
-    await registerLink.click();
+    await loginPage.clickRegister();
 
     // then
-    await expect(page).toHaveURL(`${FRONTEND_URL}/register`);
-    await expect(page.getByRole('heading', { name: 'Register' })).toBeVisible();
+    const registerPage = new RegisterPage(page);
+    await expect(page).toHaveURL(registerPage.page.url());
+    const heading = await registerPage.getHeading('Register');
+    await expect(heading).toBeVisible();
 });
