@@ -1,15 +1,14 @@
 import { test, expect } from '@playwright/test';
 import { ISO_TIMESTAMP_PATTERN } from '../../utils/validation';
+import { postSignIn } from '../../apimethods/postSignIn';
 
 test.describe('Login API', () => {
 
   test('should successfully login with valid admin credentials', async ({ request }) => {
     // when
-    const response = await request.post('/users/signin', {
-      data: {
-        username: 'admin',
-        password: 'admin'
-      }
+    const response = await postSignIn(request, {
+      username: 'admin',
+      password: 'admin'
     });
 
     // then
@@ -29,11 +28,9 @@ test.describe('Login API', () => {
 
   test('should handle empty credentials', async ({ request }) => {
     // when
-    const response = await request.post('/users/signin', {
-      data: {
-        username: '',
-        password: ''
-      }
+    const response = await postSignIn(request, {
+      username: '',
+      password: ''
     });
 
     // then
@@ -47,11 +44,9 @@ test.describe('Login API', () => {
 
   test('should return 422 for invalid credentials', async ({ request }) => {
     // when
-    const response = await request.post('/users/signin', {
-      data: {
-        username: 'invaliduser',
-        password: 'wrongpassword'
-      }
+    const response = await postSignIn(request, {
+      username: 'invaliduser',
+      password: 'wrongpassword'
     });
 
     // then
