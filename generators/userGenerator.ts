@@ -28,3 +28,12 @@ export const generateUser = (): User => {
     lastName,
   };
 };
+
+export const generateInvalidBody = (): User => ({
+  username: '',
+  email: '',
+  password: '',
+  roles: ['ROLE_ADMIN'],
+  firstName: '',
+  lastName: ''
+});

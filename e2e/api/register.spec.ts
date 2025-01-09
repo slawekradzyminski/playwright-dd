@@ -1,20 +1,12 @@
 import { test, expect } from '@playwright/test';
-import { generateUser } from '../../generators/userGenerator';
+import { generateUser, generateInvalidBody } from '../../generators/userGenerator';
 import { ISO_TIMESTAMP_PATTERN } from '../../utils/validation';
+import { postSignUp } from '../../apimethods/postSignUp';
 
 test.describe('Register API', () => {
   test('should return 400 for empty credentials', async ({ request }) => {
     // when
-    const response = await request.post('/users/signup', {
-      data: {
-        username: '',
-        email: '',
-        password: '',
-        roles: ['ROLE_ADMIN'],
-        firstName: '',
-        lastName: ''
-      }
-    });
+    const response = await postSignUp(request, generateInvalidBody());
 
     // then
     expect(response.status()).toBe(400);
@@ -31,9 +23,7 @@ test.describe('Register API', () => {
     userData.email = 'invalid-email';
 
     // when
-    const response = await request.post('/users/signup', {
-      data: userData
-    });
+    const response = await postSignUp(request, userData);
 
     // then
     expect(response.status()).toBe(400);
@@ -49,9 +39,7 @@ test.describe('Register API', () => {
     userData.password = '123';
 
     // when
-    const response = await request.post('/users/signup', {
-      data: userData
-    });
+    const response = await postSignUp(request, userData);
 
     // then
     expect(response.status()).toBe(400);
@@ -67,9 +55,7 @@ test.describe('Register API', () => {
     userData.username = 'abc';
 
     // when
-    const response = await request.post('/users/signup', {
-      data: userData
-    });
+    const response = await postSignUp(request, userData);
 
     // then
     expect(response.status()).toBe(400);
@@ -84,9 +70,7 @@ test.describe('Register API', () => {
     const userData = generateUser();
 
     // when
-    const response = await request.post('/users/signup', {
-      data: userData
-    });
+    const response = await postSignUp(request, userData);
 
     // then
     expect(response.status()).toBe(201);
@@ -101,8 +85,8 @@ test.describe('Register API', () => {
     const userData = generateUser();
 
     // when
-    await request.post('/users/signup', { data: userData });
-    const response = await request.post('/users/signup', { data: userData });
+    await postSignUp(request, userData);
+    const response = await postSignUp(request, userData);
 
     // then
     expect(response.status()).toBe(422);
