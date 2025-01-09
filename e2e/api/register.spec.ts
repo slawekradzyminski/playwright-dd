@@ -4,6 +4,21 @@ import { ISO_TIMESTAMP_PATTERN } from '../../utils/validation';
 import { postSignUp } from '../../apimethods/postSignUp';
 
 test.describe('Register API', () => {
+  test('should successfully register a new user', async ({ request }) => {
+    // given
+    const userData = generateUser();
+
+    // when
+    const response = await postSignUp(request, userData);
+
+    // then
+    expect(response.status()).toBe(201);
+    const body = await response.json();
+    expect(body).toMatchObject({
+      token: expect.any(String)
+    });
+  });
+
   test('should return 400 for empty credentials', async ({ request }) => {
     // when
     const response = await postSignUp(request, generateInvalidBody());
@@ -65,27 +80,12 @@ test.describe('Register API', () => {
     });
   });
 
-  test('should successfully register a new user', async ({ request }) => {
-    // given
-    const userData = generateUser();
-
-    // when
-    const response = await postSignUp(request, userData);
-
-    // then
-    expect(response.status()).toBe(201);
-    const body = await response.json();
-    expect(body).toMatchObject({
-      token: expect.any(String)
-    });
-  });
-
   test('should return 422 for duplicate username', async ({ request }) => {
     // given
     const userData = generateUser();
+    await postSignUp(request, userData);
 
     // when
-    await postSignUp(request, userData);
     const response = await postSignUp(request, userData);
 
     // then
