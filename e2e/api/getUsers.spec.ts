@@ -1,4 +1,4 @@
-import { test, expect } from '../fixtures/authenticated.fixture';
+import { test, expect } from '../../fixtures/authenticated.fixture';
 import { getUsers } from '../../apimethods/getUsers';
 import { User } from '../../types/User';
 

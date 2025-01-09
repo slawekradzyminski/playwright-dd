@@ -1,5 +1,5 @@
 import { test as base } from '@playwright/test';
-import { generateUser } from '../../generators/userGenerator';
+import { generateUser } from '../generators/userGenerator';
 
 type UserFixtures = {
   userData: ReturnType<typeof generateUser>;

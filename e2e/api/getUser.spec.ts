@@ -1,4 +1,4 @@
-import { test, expect } from '../fixtures/authenticated.fixture';
+import { test, expect } from '../../fixtures/authenticated.fixture';
 import { getUser } from '../../apimethods/getUser';
 import { User } from '../../types/User';
 import exp from 'constants';
@@ -42,7 +42,7 @@ test.describe('User API', () => {
     const response = await getUser(request, authenticatedUser.userData.username);
 
     // then
-    expect(response.status()).toBe(402);
+    expect(response.status()).toBe(403);
   });
 
 }); 

@@ -1,4 +1,4 @@
-import { test, expect } from '../fixtures/auth.fixture';
+import { test, expect } from '../../fixtures/auth.fixture';
 import { ISO_TIMESTAMP_PATTERN } from '../../utils/validation';
 import { postSignIn } from '../../apimethods/postSignIn';
 

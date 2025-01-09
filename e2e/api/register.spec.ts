@@ -1,4 +1,4 @@
-import { test, expect } from '../fixtures/user.fixture';
+import { test, expect } from '../../fixtures/user.fixture';
 import { generateInvalidBody } from '../../generators/userGenerator';
 import { ISO_TIMESTAMP_PATTERN } from '../../utils/validation';
 import { postSignUp } from '../../apimethods/postSignUp';

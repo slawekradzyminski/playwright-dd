@@ -1,7 +1,7 @@
 import { test as base, expect } from '@playwright/test';
-import { generateUser } from '../../generators/userGenerator';
-import { postSignUp } from '../../apimethods/postSignUp';
-import { User } from '../../types/User';
+import { generateUser } from '../generators/userGenerator';
+import { postSignUp } from '../apimethods/postSignUp';
+import { User } from '../types/User';
 
 type AuthFixtures = {
   registeredUser: User;
