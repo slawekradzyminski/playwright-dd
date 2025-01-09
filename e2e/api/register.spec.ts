@@ -1,13 +1,10 @@
-import { test, expect } from '@playwright/test';
-import { generateUser, generateInvalidBody } from '../../generators/userGenerator';
+import { test, expect } from '../fixtures/user.fixture';
+import { generateInvalidBody } from '../../generators/userGenerator';
 import { ISO_TIMESTAMP_PATTERN } from '../../utils/validation';
 import { postSignUp } from '../../apimethods/postSignUp';
 
 test.describe('Register API', () => {
-  test('should successfully register a new user', async ({ request }) => {
-    // given
-    const userData = generateUser();
-
+  test('should successfully register a new user', async ({ request, userData }) => {
     // when
     const response = await postSignUp(request, userData);
 
@@ -32,9 +29,8 @@ test.describe('Register API', () => {
     });
   });
 
-  test('should return 400 for invalid email format', async ({ request }) => {
+  test('should return 400 for invalid email format', async ({ request, userData }) => {
     // given
-    const userData = generateUser();
     userData.email = 'invalid-email';
 
     // when
@@ -48,9 +44,8 @@ test.describe('Register API', () => {
     });
   });
 
-  test('should return 400 for short password', async ({ request }) => {
+  test('should return 400 for short password', async ({ request, userData }) => {
     // given
-    const userData = generateUser();
     userData.password = '123';
 
     // when
@@ -64,9 +59,8 @@ test.describe('Register API', () => {
     });
   });
 
-  test('should return 400 for short username', async ({ request }) => {
+  test('should return 400 for short username', async ({ request, userData }) => {
     // given
-    const userData = generateUser();
     userData.username = 'abc';
 
     // when
@@ -80,9 +74,8 @@ test.describe('Register API', () => {
     });
   });
 
-  test('should return 422 for duplicate username', async ({ request }) => {
-    // given
-    const userData = generateUser();
+  test('should return 422 for duplicate username', async ({ request, userData }) => {
+    // given user is already registered
     await postSignUp(request, userData);
 
     // when
