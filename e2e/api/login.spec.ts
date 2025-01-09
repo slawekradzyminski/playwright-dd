@@ -1,14 +1,14 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../fixtures/auth.fixture';
 import { ISO_TIMESTAMP_PATTERN } from '../../utils/validation';
 import { postSignIn } from '../../apimethods/postSignIn';
 
 test.describe('Login API', () => {
 
-  test('should successfully login with valid admin credentials', async ({ request }) => {
+  test('should successfully login with valid credentials', async ({ request, registeredUser }) => {
     // when
     const response = await postSignIn(request, {
-      username: 'admin',
-      password: 'admin'
+      username: registeredUser.username,
+      password: registeredUser.password
     });
 
     // then
@@ -16,11 +16,11 @@ test.describe('Login API', () => {
     
     const body = await response.json();
     expect(body).toMatchObject({
-      username: 'admin',
-      roles: ['ROLE_ADMIN', 'ROLE_CLIENT'],
-      firstName: 'Slawomir',
-      lastName: 'Radzyminski',
-      email: 'admin@email.com'
+      username: registeredUser.username,
+      roles: registeredUser.roles,
+      firstName: registeredUser.firstName,
+      lastName: registeredUser.lastName,
+      email: registeredUser.email
     });
     expect(body.token).toBeDefined();
     expect(typeof body.token).toBe('string');
