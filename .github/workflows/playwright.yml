@@ -36,7 +36,7 @@ jobs:
           ./run-docker-compose-ci.sh
 
       - name: Run Playwright tests
-        run: npx playwright test
+        run: npx playwright test --workers=4
 
       - name: Setup Pages
         if: always()
