@@ -36,7 +36,7 @@ jobs:
         run: npx playwright install --with-deps
 
       - name: Run Playwright tests
-        run: npx playwright test --reporter=html
+        run: npx playwright test --reporter=html --workers=4
 
       - name: Setup Pages
         if: always()
