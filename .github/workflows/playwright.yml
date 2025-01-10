@@ -24,7 +24,7 @@ jobs:
         run: npx playwright install --with-deps
 
       - name: Run Playwright tests
-        run: npm run test:jsonplaceholder
+        run: npx playwright test e2e/api/jsonplaceholder/ --reporter=html
 
       - name: Setup Pages
         if: always()
