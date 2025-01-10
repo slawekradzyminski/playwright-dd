@@ -25,8 +25,9 @@ export class HomePage extends BasePage {
     }
 
     async getUsersCount() {
-        await this.page.waitForLoadState('networkidle'); // wait till get all users finishes
-        return this.page.locator('ul li').count();
+        const userList = this.page.locator('ul li');
+        await userList.first().waitFor({ state: 'attached' });
+        return userList.count();
     }
 
     async findUserInList(firstName: string, lastName: string) {
