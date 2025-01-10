@@ -39,6 +39,8 @@ export const test = base.extend<AuthenticatedUIFixtures>({
       localStorage.setItem('user', JSON.stringify(data));
     }, loginData);
    
+    await page.waitForTimeout(1000);
+
     // Provide the context to the test
     await use({
       userData,
