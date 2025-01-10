@@ -23,20 +23,8 @@ jobs:
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
 
-      - name: Checkout awesome-localstack
-        uses: actions/checkout@v4
-        with:
-          repository: 'slawekradzyminski/awesome-localstack'
-          path: 'awesome-localstack'
-
-      - name: Run Docker Compose for localstack
-        run: |
-          cd awesome-localstack
-          chmod +x run-docker-compose-ci.sh
-          ./run-docker-compose-ci.sh
-
       - name: Run Playwright tests
-        run: npx playwright test --workers=4
+        run: npm run test:jsonplaceholder
 
       - name: Setup Pages
         if: always()

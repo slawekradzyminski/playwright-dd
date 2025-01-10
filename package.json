@@ -8,7 +8,8 @@
     "test:headed": "playwright test --headed",
     "test:debug": "playwright test --debug",
     "test:ai": "playwright test --reporter=list",
-    "test:ui-only": "playwright test e2e/ui/ --reporter=list"
+    "test:ui-only": "playwright test e2e/ui/ --reporter=list",
+    "test:jsonplaceholder": "playwright test e2e/api/jsonplaceholder/ --reporter=list"
   },
   "author": "",
   "license": "ISC",
