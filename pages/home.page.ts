@@ -1,12 +1,13 @@
 import { type Page, type Locator } from '@playwright/test';
 import { BasePage } from './base.page';
-
+import { type User } from '../types/User';
 
 export class HomePage extends BasePage {
     readonly welcomeMessage: (firstName: string) => Locator;
     readonly logoutButton: Locator;
     readonly userListHeading: Locator;
     readonly successMessage: Locator;
+    readonly userList: Locator;
 
     constructor(page: Page) {
         super(page);
@@ -14,10 +15,13 @@ export class HomePage extends BasePage {
         this.logoutButton = page.getByRole('link', { name: 'Logout' });
         this.userListHeading = page.getByRole('heading', { name: 'All registered users:' });
         this.successMessage = page.getByText("You're logged in! Congratulations :)");
+        this.userList = page.locator('ul');
     }
 
     async goto() {
         await super.goto('/');
+        await this.successMessage.waitFor({ state: 'visible' });
+        await this.userListHeading.waitFor({ state: 'visible' });
     }
 
     async logout() {
@@ -33,6 +37,14 @@ export class HomePage extends BasePage {
     async findUserInList(firstName: string, lastName: string) {
         const fullName = `${firstName} ${lastName}`;
         return this.page.locator('ul li').filter({ hasText: fullName }).first();
+    }
+
+    async getEditButton(user: User) {
+        await this.userList.waitFor({ state: 'visible' });
+        const fullName = `${user.firstName} ${user.lastName}`;
+        const userRow = this.page.locator('ul li').filter({ hasText: fullName }).first();
+        await userRow.waitFor({ state: 'visible' });
+        return userRow.locator('a.text-primary.edit');
     }
 }
 
