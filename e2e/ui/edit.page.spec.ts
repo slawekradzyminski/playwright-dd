@@ -3,6 +3,23 @@ import { HomePage } from '../../pages/home.page';
 import { EditPage } from '../../pages/edit.page';
 import { generateUser } from '../../generators/userGenerator';
 import { getUser } from '../../apimethods/getUser';
+import { type User } from '../../types/User';
+import { APIRequestContext } from '@playwright/test';
+
+async function verifyUserDataOnServer(
+    request: APIRequestContext, 
+    username: string, 
+    token: string, 
+    expectedData: Partial<User>
+) {
+    const userResponse = await getUser(request, username, token);
+    expect(userResponse.status()).toBe(200);
+    const userData = await userResponse.json();
+    
+    Object.entries(expectedData).forEach(([key, value]) => {
+        expect(userData[key]).toEqual(value);
+    });
+}
 
 test('should display edit form with user data', async ({ page, authenticatedContext }) => {
     // given
@@ -46,14 +63,18 @@ test('should update user data successfully', async ({ page, request, authenticat
     await expect(userInList).toBeVisible();
 
     // verify server-side changes
-    const userResponse = await getUser(request, authenticatedContext.userData.username, authenticatedContext.token);
-    expect(userResponse.status()).toBe(200);
-    const userData = await userResponse.json();
-    expect(userData.firstName).toBe(updatedUser.firstName);
-    expect(userData.lastName).toBe(updatedUser.lastName);
-    expect(userData.email).toBe(updatedUser.email);
-    expect(userData.username).toBe(authenticatedContext.userData.username);
-    expect(userData.roles).toEqual(authenticatedContext.userData.roles);
+    await verifyUserDataOnServer(
+        request, 
+        authenticatedContext.userData.username, 
+        authenticatedContext.token,
+        {
+            firstName: updatedUser.firstName,
+            lastName: updatedUser.lastName,
+            email: updatedUser.email,
+            username: authenticatedContext.userData.username,
+            roles: authenticatedContext.userData.roles
+        }
+    );
 });
 
 test('should cancel edit and return to home page', async ({ page, authenticatedContext }) => {
