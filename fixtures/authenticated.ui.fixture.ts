@@ -33,14 +33,13 @@ export const test = base.extend<AuthenticatedUIFixtures>({
    
     // Navigate to login page first (to get access to localStorage)
     await page.goto(`${FRONTEND_URL}`);
-   
+    await page.waitForTimeout(1000);
     // Set up localStorage with user data
     await page.evaluate((data) => {
-      localStorage.setItem('user', JSON.stringify(data));
-    }, loginData);
-   
-    await page.waitForTimeout(1000);
-
+        localStorage.setItem('user', JSON.stringify(data));
+        window.dispatchEvent(new Event('storage'));
+      }, loginData);
+  
     // Provide the context to the test
     await use({
       userData,
