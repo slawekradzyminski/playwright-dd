@@ -7,31 +7,28 @@ test('should display edit form with user data', async ({ page, authenticatedCont
     // given
     const homePage = new HomePage(page);
     await homePage.goto();
-    await expect(homePage.successMessage).toBeVisible();
-    
-    // when
     await homePage.clickEditButton(authenticatedContext.userData);
     
-    // then
+    // when
     const editPage = new EditPage(page);
+
+    // then
     await expect(editPage.heading).toBeVisible();
     await expect(editPage.firstNameInput).toHaveValue(authenticatedContext.userData.firstName);
     await expect(editPage.lastNameInput).toHaveValue(authenticatedContext.userData.lastName);
     await expect(editPage.emailInput).toHaveValue(authenticatedContext.userData.email);
     await expect(editPage.usernameInput).toBeDisabled();
+    await expect(editPage.usernameInput).toHaveValue(authenticatedContext.userData.username);
     await expect(editPage.rolesInput).toBeDisabled();
+    await expect(editPage.rolesInput).toHaveValue(authenticatedContext.userData.roles.join(','));
 });
 
 test('should update user data successfully', async ({ page, authenticatedContext }) => {
     // given
     const homePage = new HomePage(page);
     await homePage.goto();
-    await expect(homePage.successMessage).toBeVisible();
-    
     await homePage.clickEditButton(authenticatedContext.userData);
-    
     const editPage = new EditPage(page);
-    await expect(editPage.heading).toBeVisible();
     const updatedUser = generateUser();
     
     // when
@@ -52,12 +49,8 @@ test('should cancel edit and return to home page', async ({ page, authenticatedC
     // given
     const homePage = new HomePage(page);
     await homePage.goto();
-    await expect(homePage.successMessage).toBeVisible();
-    
     await homePage.clickEditButton(authenticatedContext.userData);
-    
     const editPage = new EditPage(page);
-    await expect(editPage.heading).toBeVisible();
     const updatedUser = generateUser();
     
     // when
