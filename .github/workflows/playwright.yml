@@ -17,6 +17,18 @@ jobs:
         with:
           node-version: 20
 
+      - name: Checkout external repository
+        uses: actions/checkout@v4
+        with:
+          repository: 'slawekradzyminski/awesome-localstack'
+          path: 'awesome-localstack'
+
+      - name: Run Docker Compose
+        run: |
+          cd awesome-localstack
+          chmod +x run-docker-compose-ci.sh
+          ./run-docker-compose-ci.sh  
+
       - name: Install dependencies
         run: npm ci
 
@@ -24,7 +36,7 @@ jobs:
         run: npx playwright install --with-deps
 
       - name: Run Playwright tests
-        run: npx playwright test e2e/api/jsonplaceholder/ --reporter=html
+        run: npx playwright test --reporter=html
 
       - name: Setup Pages
         if: always()
