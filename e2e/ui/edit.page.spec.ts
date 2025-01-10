@@ -10,8 +10,7 @@ test('should display edit form with user data', async ({ page, authenticatedCont
     await expect(homePage.successMessage).toBeVisible();
     
     // when
-    const editButton = await homePage.getEditButton(authenticatedContext.userData);
-    await editButton.click();
+    await homePage.clickEditButton(authenticatedContext.userData);
     
     // then
     const editPage = new EditPage(page);
@@ -29,8 +28,7 @@ test('should update user data successfully', async ({ page, authenticatedContext
     await homePage.goto();
     await expect(homePage.successMessage).toBeVisible();
     
-    const editButton = await homePage.getEditButton(authenticatedContext.userData);
-    await editButton.click();
+    await homePage.clickEditButton(authenticatedContext.userData);
     
     const editPage = new EditPage(page);
     await expect(editPage.heading).toBeVisible();
@@ -56,8 +54,7 @@ test('should cancel edit and return to home page', async ({ page, authenticatedC
     await homePage.goto();
     await expect(homePage.successMessage).toBeVisible();
     
-    const editButton = await homePage.getEditButton(authenticatedContext.userData);
-    await editButton.click();
+    await homePage.clickEditButton(authenticatedContext.userData);
     
     const editPage = new EditPage(page);
     await expect(editPage.heading).toBeVisible();

@@ -39,12 +39,17 @@ export class HomePage extends BasePage {
         return this.page.locator('ul li').filter({ hasText: fullName }).first();
     }
 
-    async getEditButton(user: User) {
+    private async _getEditButton(user: User) {
         await this.userList.waitFor({ state: 'visible' });
         const fullName = `${user.firstName} ${user.lastName}`;
         const userRow = this.page.locator('ul li').filter({ hasText: fullName }).first();
         await userRow.waitFor({ state: 'visible' });
         return userRow.locator('a.text-primary.edit');
+    }
+
+    async clickEditButton(user: User) {
+        const editButton = await this._getEditButton(user);
+        await editButton.click();
     }
 }
 
