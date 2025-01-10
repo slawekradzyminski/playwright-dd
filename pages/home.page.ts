@@ -1,6 +1,7 @@
 import { type Page, type Locator } from '@playwright/test';
 import { BasePage } from './base.page';
 import { type User } from '../types/User';
+import { FRONTEND_URL } from '../utils/constants';
 
 export class HomePage extends BasePage {
     readonly welcomeMessage: (firstName: string) => Locator;
@@ -19,7 +20,7 @@ export class HomePage extends BasePage {
     }
 
     async goto() {
-        await super.goto('/');
+        await super.goto(FRONTEND_URL);
         await this.successMessage.waitFor({ state: 'visible' });
         await this.userListHeading.waitFor({ state: 'visible' });
     }
