@@ -20,7 +20,7 @@ export class HomePage extends BasePage {
     }
 
     async goto() {
-        await super.goto(FRONTEND_URL);
+        await super.goto('');
         await this.successMessage.waitFor({ state: 'visible' });
         await this.userListHeading.waitFor({ state: 'visible' });
     }
